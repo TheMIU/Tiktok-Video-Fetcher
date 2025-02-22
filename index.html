@@ -262,7 +262,6 @@
             }
         }
 
-        // thumbnails
         async function displayLinksWithCopyButtons(links) {
             const pastedContentDiv = document.getElementById("pastedContent");
             pastedContentDiv.innerHTML = ''; // Clear previous content
@@ -277,12 +276,13 @@
                 linkContainer.style.display = 'flex';
                 linkContainer.style.alignItems = 'center';
 
-                // Create the thumbnail image (only if fetched successfully)
                 if (thumbnailUrl) {
+                    // Load the image, then resize it in a hidden canvas
                     const thumbnail = document.createElement('img');
                     thumbnail.src = thumbnailUrl;
                     thumbnail.alt = "TikTok Thumbnail";
-                    thumbnail.style.width = '120px';
+                    thumbnail.style.width = '80px'; // Reduce display size
+                    thumbnail.style.height = 'auto';
                     thumbnail.style.marginRight = '10px';
                     thumbnail.style.cursor = 'pointer';
 
@@ -290,6 +290,22 @@
                     thumbnail.addEventListener('click', () => {
                         window.open(link, "_blank");
                     });
+
+                    // Reduce quality by processing image
+                    thumbnail.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+
+                        // Set smaller canvas size (e.g., 50% of original)
+                        canvas.width = thumbnail.naturalWidth / 3;
+                        canvas.height = thumbnail.naturalHeight / 3;
+
+                        // Draw the image in lower quality
+                        ctx.drawImage(thumbnail, 0, 0, canvas.width, canvas.height);
+
+                        // Convert to lower-quality base64
+                        thumbnail.src = canvas.toDataURL('image/jpeg', 0.4); // 40% quality
+                    };
 
                     linkContainer.appendChild(thumbnail);
                 }
@@ -306,12 +322,9 @@
                 copyButton.textContent = "Copy Link";
                 copyButton.classList.add('copy-button');
 
-                // Add click event to copy the link to clipboard
                 copyButton.addEventListener('click', function () {
                     navigator.clipboard.writeText(link);
                     copyButton.textContent = "Copied!";
-
-                    // Reset button text after 2 seconds
                     setTimeout(() => {
                         copyButton.textContent = "Copy Link";
                     }, 2000);
