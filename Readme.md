@@ -14,4 +14,7 @@ This project extracts TikTok video links, displays them with their thumbnails, a
 2. Fetches video thumbnails using an API  
 3. Displays each link with its corresponding thumbnail  
 4. Adds a "Copy Link" button  
-5. Clicking the thumbnail opens the video  
+5. Clicking the thumbnail opens the video
+
+
+Made with ChatGPT.
